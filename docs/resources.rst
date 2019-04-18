@@ -68,6 +68,7 @@ Heroku
 
 `Python on Heroku`_ documentation.
 
+.. _`aiohttp documentation`: https://aiohttp.readthedocs.io
 
 .. _`Python venv tutorial`: https://docs.python.org/3/tutorial/venv.html
 
