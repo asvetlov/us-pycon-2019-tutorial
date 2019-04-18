@@ -60,7 +60,7 @@ Example::
 asyncio
 -------
 
-`aiohttp` is async libraries. Read up the `quick intro <https://www.blog.pythonlibrary.org/2016/07/26/python-3-an-intro-to-asyncio/>`_
+`aiohttp` is async Python library. Read up the `quick intro <https://www.blog.pythonlibrary.org/2016/07/26/python-3-an-intro-to-asyncio/>`_
 to asyncio.
 
 Heroku
