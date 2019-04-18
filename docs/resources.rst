@@ -71,15 +71,6 @@ Heroku
 
 .. _`Python venv tutorial`: https://docs.python.org/3/tutorial/venv.html
 
-.. _`Issues API`: https://developer.github.com/v3/issues/
-.. _`Pull requests API`: https://developer.github.com/v3/pulls/
-.. _`Reactions API`: https://developer.github.com/v3/reactions/
-.. _`Event Types & Payloads`: https://developer.github.com/v3/activity/events/types/
-
-
-.. _`gidgethub documentation`: https://gidgethub.readthedocs.io
-.. _`aiohttp documentation`: https://aiohttp.readthedocs.io
-
 .. _`Python on Heroku`: https://devcenter.heroku.com/categories/python
 
 
