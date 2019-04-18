@@ -9,3 +9,4 @@ install:
 
 script:
 - make lint
+- sphinx-build -n -W -E -q -b html -d ./docs/_build/doctrees ./docs ./docs/_build/html
