@@ -6,7 +6,7 @@ async def handler(request: web.Request) -> web.Response:
     return web.Response(text=f"Hello, {user}")
 
 
-async def init_app() -> web.Application:
+async def init_app():
     app = web.Application()
     app.add_routes([web.get("/", handler)])
     app.add_routes([web.get("/{user}", handler)])
