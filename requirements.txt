@@ -1,6 +1,6 @@
 aiohttp==3.5.4
 aiohttp-session==2.7.0
 mypy==0.701
-black==0.19.3b0
+black==19.3b0
 flake8==3.7.7
 isort==4.3.17
