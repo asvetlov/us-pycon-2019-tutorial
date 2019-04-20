@@ -2,13 +2,13 @@ import asyncio
 import time
 
 
-async def long_running_task(time_to_sleep):
+async def long_running_task(time_to_sleep: int) -> None:
     print(f"Begin sleep for {time_to_sleep}")
     await asyncio.sleep(time_to_sleep)
     print(f"Awake from {time_to_sleep}")
 
 
-async def main():
+async def main() -> None:
     task1 = asyncio.create_task(long_running_task(2))
     task2 = asyncio.create_task(long_running_task(10))
     task3 = asyncio.create_task(long_running_task(5))
