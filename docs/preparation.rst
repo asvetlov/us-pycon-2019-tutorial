@@ -3,9 +3,10 @@ Preparation
 
 Before coming to the tutorial, please do the following:
 
-1. Have Python 3.7 installed in your laptop. **Note:** It's important that you're running Python 3.7 (or above) because we will use some of the new features added in 3.7 in this tutorial.
+1. Have Python 3.7 installed in your laptop. **Note:** It's important that you're running Python 3.7
+   (or above) because we will use some of the new features added in 3.7 in this tutorial.
 
-   * `Here's a tutorial that will help you get set up <https://realpython.com/installing-python/>`__
+   * `Here's a tutorial that will help you get set up. <https://realpython.com/installing-python/>`__
 
 2. Create a `GitHub <https://github.com/>`_ account, if you don't already have one.
    If your account has two-factor-authentication enabled, bring that device.
