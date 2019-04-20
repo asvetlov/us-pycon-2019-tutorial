@@ -72,7 +72,7 @@ Here is an example solution. It is ok if yours do not look exactly the same.
 In the above solution, we're downloading the PEP one at a time. From previous
 section, we know that using :mod:`asyncio <python:asyncio>`, we can run the
 same task **asynchronously**. `requests`_ itself is not an asyncio library.
-Enter `aiohttp `_.
+Enter `aiohttp`_.
 
 Downloading contents asynchronously
 -----------------------------------
