@@ -3,17 +3,16 @@ import time
 import requests
 
 
-def download_pep(pep_number):
+def download_pep(pep_number: int) -> bytes:
 
     url = f"https://www.python.org/dev/peps/pep-{pep_number}/"
     print(f"Begin downloading {url}")
     response = requests.get(url)
     print(f"Finished downloading {url}")
-
     return response.content
 
 
-def write_to_file(pep_number, content):
+def write_to_file(pep_number: int, content: bytes) -> None:
 
     filename = f"sync_{pep_number}.html"
 

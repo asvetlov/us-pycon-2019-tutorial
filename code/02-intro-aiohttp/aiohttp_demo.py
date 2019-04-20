@@ -4,7 +4,7 @@ import time
 import aiohttp
 
 
-async def download_pep(pep_number):
+async def download_pep(pep_number: int) -> bytes:
 
     url = f"https://www.python.org/dev/peps/pep-{pep_number}/"
     print(f"Begin downloading {url}")
@@ -15,7 +15,7 @@ async def download_pep(pep_number):
             return content
 
 
-async def write_to_file(pep_number, content):
+async def write_to_file(pep_number: int, content: bytes) -> None:
     filename = f"async_{pep_number}.html"
     with open(filename, "wb") as pep_file:
         print(f"Begin writing to {filename}")
@@ -23,7 +23,7 @@ async def write_to_file(pep_number, content):
         print(f"Finished writing {filename}")
 
 
-async def web_scrape_task(pep_number):
+async def web_scrape_task(pep_number: int) -> None:
     content = await download_pep(pep_number)
     await write_to_file(pep_number, content)
 
