@@ -69,3 +69,9 @@ html_theme_options = {
     'github_banner': True,
     'show_relbars': True,
 }
+
+extensions = [
+    'sphinx.ext.intersphinx',
+]
+
+intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
