@@ -32,7 +32,7 @@ async def main() -> None:
     tasks = []
     for i in range(8010, 8016):
         tasks.append(web_scrape_task(i))
-    await (asyncio.wait(tasks))
+    await asyncio.wait(tasks)
 
 
 if __name__ == "__main__":
