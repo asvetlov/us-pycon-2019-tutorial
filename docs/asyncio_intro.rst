@@ -87,7 +87,7 @@ To actually execute the coroutine, you have three options:
     asyncio.run(main())
 
 
-Suppose now we want to execute ``long_running_task`` three times ``asynchronously``:
+Suppose now we want to execute ``long_running_task`` three times **asynchronously**:
 
 .. literalinclude:: ../code/01-intro-asyncio/async_demo.py
 
