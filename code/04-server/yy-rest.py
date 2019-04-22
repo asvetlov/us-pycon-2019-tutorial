@@ -31,7 +31,9 @@ def handle_json_error(
         except asyncio.CancelledError:
             raise
         except Exception as ex:
-            return web.json_response({"status": "failed", "reason": str(ex)})
+            return web.json_response(
+                {"status": "failed", "reason": str(ex)}, status=400
+            )
 
     return handler
 
@@ -41,7 +43,7 @@ async def root(request: web.Request) -> web.Response:
 
 
 @handle_json_error
-async def posts(request: web.Request) -> web.Response:
+async def list_posts(request: web.Request) -> web.Response:
     ret = []
     db = request.config_dict["DB"]
     async with db.execute("SELECT id, owner, editor, title FROM posts") as cursor:
@@ -110,10 +112,11 @@ async def del_post(request: web.Request) -> web.Response:
     async with db.execute("DELETE FROM posts WHERE id = ?", [post_id]) as cursor:
         if cursor.rowcount == 0:
             return web.json_response(
-                {"status": "fail", "reason": f"post {post_id} doesn't exist"}
+                {"status": "fail", "reason": f"post {post_id} doesn't exist"},
+                status=404,
             )
     await db.commit()
-    return web.json_response({"status": "ok", "post_id": post_id})
+    return web.json_response({"status": "ok", "id": post_id})
 
 
 @handle_json_error
@@ -168,7 +171,7 @@ async def init_db(app: web.Application) -> AsyncIterator[None]:
 async def init_app() -> web.Application:
     app = web.Application()
     app.add_routes([web.get("/", root)])
-    app.add_routes([web.get("/api", posts)])
+    app.add_routes([web.get("/api", list_posts)])
     app.add_routes([web.post("/api", new_post)])
     app.add_routes([web.get("/api/{post}", get_post)])
     app.add_routes([web.delete("/api/{post}", del_post)])
