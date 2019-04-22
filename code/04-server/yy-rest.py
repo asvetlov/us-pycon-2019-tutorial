@@ -1,6 +1,6 @@
 import asyncio
 from pathlib import Path
-from typing import Any, AsyncIterator, Dict
+from typing import Any, AsyncIterator, Awaitable, Callable, Dict
 
 import aiosqlite
 from aiohttp import web
@@ -22,8 +22,9 @@ async def fetch_post(db: aiosqlite.Connection, post_id: int) -> Dict[str, Any]:
         }
 
 
-
-def handle_json_error(func: Callable[[web.Request], web.Response]):
+def handle_json_error(
+    func: Callable[[web.Request], Awaitable[web.Response]]
+) -> Callable[[web.Request], Awaitable[web.Response]]:
     async def handler(request: web.Request) -> web.Response:
         try:
             return await func(request)
@@ -31,6 +32,7 @@ def handle_json_error(func: Callable[[web.Request], web.Response]):
             raise
         except Exception as ex:
             return web.json_response({"status": "failed", "reason": str(ex)})
+
     return handler
 
 
