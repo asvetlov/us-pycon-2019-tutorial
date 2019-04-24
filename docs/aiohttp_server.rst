@@ -115,7 +115,7 @@ Another way to parametrize resource is by using query parameters, for example
 
         return web.Response(text=f"Hello, {user} {page_num}")
 
-Now try going to http://0.0.0.0:8080/<student?/?page=<pagenum>.
+Now try going to http://0.0.0.0:8080/<student>/?page=<pagenum>.
 
 Serving other methods (POST, PUT, etc)
 --------------------------------------
