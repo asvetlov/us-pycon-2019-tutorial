@@ -99,7 +99,7 @@ by having the ``/{username}/`` url.
         return web.Response(text=f"Hello, {user}")
 
 
-Now re-start the server and open http://0.0.0.0:8080/student in your favorite
+Now re-start the server and open http://0.0.0.0:8080/<student> in your favorite
 browser.
 
 Another way to parametrize resource is by using query parameters, for example
@@ -110,13 +110,18 @@ Another way to parametrize resource is by using query parameters, for example
     @routes.get('/{username}')
     async def greet_user(request: web.Request) -> web.Response:
         user = request.match_info.get("username", "")
-        return web.Response(text=f"Hello, {user}")
+
+        page_num = request.rel_url.query.get("page", "")
+
+        return web.Response(text=f"Hello, {user} {page_num}")
+
+Now try going to http://0.0.0.0:8080/<student?/?page=<pagenum>.
 
 Serving other methods (POST, PUT, etc)
 --------------------------------------
 
 Notice so far we've been serving ``GET`` resources. If you have resource that
-needs to be accessed in other methods, like ``POST`` or ``PUT``:
+needs to be accessed in other methods, like ``POST`` or ``PUT``::
 
     @routes.post('/add_user')
     async def add_user(request: web.Request) -> web.Response:
