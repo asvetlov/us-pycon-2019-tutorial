@@ -2,7 +2,7 @@ from aiohttp import web
 
 
 async def handler(request: web.Request) -> web.Response:
-    return web.Response(text="OK")
+    return web.Response(text="Hello world")
 
 
 async def init_app() -> web.Application:
