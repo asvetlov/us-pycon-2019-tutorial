@@ -25,7 +25,8 @@ First we will define a request handler, and it is a coroutine.
     async def handler(request):
         return web.Response(text="Hello world")
 
-The above is a coroutine that will return a Web Response, containing the text ``Hello world``.
+The above is a coroutine that will return a Web Response, containing the text ``Hello
+world``.
 
 Once we have the request handler, create an Application instance::
 
@@ -63,9 +64,9 @@ The complete code can look like the following:
 Using route decorators
 ----------------------
 
-Notice in the previous example, we're registering the root url by calling ``add_routes``,
-and passing it a list of one URL. If you have more than one URL, it is a matter of
-creating another request handler coroutine.
+Notice in the previous example, we're registering the root url by calling
+``app.add_routes``, and passing it a list of one URL. If you have more than one URL, it
+is a matter of creating another request handler coroutine.
 
 There is another way to define urls, by using decorators.
 
@@ -132,17 +133,92 @@ needs to be accessed in other methods, like ``POST`` or ``PUT``::
         return web.Response(text=f"{username} was added")
 
 
-Returning JSON Response
------------------------
+TBD: technically request.post() is for multipart encoded content mostly. Should we tell about it?
+
+
+Working with JSON
+-----------------
 
 ::
 
     @routes.get('/json')
     async def handler(request):
-        data = {'some': 'data'}
+        args = await request.json()
+        data = {'value': args['key']}
         return web.json_response(data)
 
 
+Application's Shared State
+--------------------------
+
+Every server has a state, e.g. database connection.
+
+Initialize DB connection::
+
+    async def init_app() -> web.Application:
+        app = web.Application()
+        app.add_routes(...)
+        app.cleanup_ctx.append(init_db)
+        return app
+
+    async def init_db(app: web.Application) -> AsyncIterator[None]:
+        db = await aiosqlite.connect("db.sqlite")
+        app["DB"] = db
+        yield
+        await db.close()
+
+Use DB in web-handler::
+
+    async def new_post(request: web.Request) -> web.Response:
+        post = await request.json()
+        db = request.config_dict["DB"]
+        async with db.execute(
+            "INSERT INTO posts (title, text) VALUES(?, ?, ?, ?)",
+            [post["title"], post["text"]],
+        ) as cursor:
+            post_id = cursor.lastrowid
+        await db.commit()
+        return web.json_response({"new_post": post_id})
+
+
+Full example for REST API
+--------------------------
+
+Example for simple blog REST API: https://github.com/asvetlov/us-pycon-2019-tutorial/blob/master/code/04-server/yy-rest.py
+
+Post structure:
+
++--------+--------------+------+
+| Field  | Description  | Type |
++========+==============+======+
+| id     |  Post id     | int  |
++--------+--------------+------+
+| title  | Title        | str  |
++--------+--------------+------+
+| text   | Content      | str  |
++--------+--------------+------+
+| owner  | Post creator | str  |
++--------+--------------+------+
+| editor | Last editor  | str  |
++--------+--------------+------+
+
+
+API endpoints:
+
+`GET /api`
+  List posts.
+
+`POST /api`
+  Add new post. Arguments: `title`, `text`, `owner`.
+
+`GET /api/{post}`
+  Fetch existing post. Return Post's json.
+
+`DELETE /api/{post}`
+  Delete a post.
+
+`PATCH /api/{post}`
+  Edit a post. Arguments: `title`, `text`, `editor`.
 
 
 TBD
