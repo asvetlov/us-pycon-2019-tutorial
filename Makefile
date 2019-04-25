@@ -9,6 +9,10 @@ lint:
 	flake8 code
 	mypy $(PY)
 
+doc:
+	make -C docs html
+	@echo "open file://`pwd`/docs/_build/html/index.html"
+
 fmt format:
 	isort -rc code
 	black code
