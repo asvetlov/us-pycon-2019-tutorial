@@ -170,12 +170,16 @@ async def init_db(app: web.Application) -> AsyncIterator[None]:
 
 async def init_app() -> web.Application:
     app = web.Application()
-    app.add_routes([web.get("/", root),
-                    web.get("/api", list_posts),
-                    web.post("/api", new_post),
-                    web.get("/api/{post}", get_post),
-                    web.delete("/api/{post}", del_post),
-                    web.patch("/api/{post}", update_post)])
+    app.add_routes(
+        [
+            web.get("/", root),
+            web.get("/api", list_posts),
+            web.post("/api", new_post),
+            web.get("/api/{post}", get_post),
+            web.delete("/api/{post}", del_post),
+            web.patch("/api/{post}", update_post),
+        ]
+    )
     app.cleanup_ctx.append(init_db)
     return app
 
