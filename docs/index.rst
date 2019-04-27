@@ -48,6 +48,7 @@ Agenda
    aiohttp_server
    aiohttp_client
    aiohttp_templates
+   aiohttp_file_uploading
    aiohttp_middlewares
    aiohttp_session
    aiohttp_tests
