@@ -184,7 +184,7 @@ Use DB in web-handler::
 Full example for REST API
 --------------------------
 
-Example for simple blog REST API: https://github.com/asvetlov/us-pycon-2019-tutorial/blob/master/code/04-server/yy-rest.py
+Example for simple blog REST API: https://github.com/asvetlov/us-pycon-2019-tutorial/blob/master/code/04-server/xx-rest.py
 
 Post structure:
 

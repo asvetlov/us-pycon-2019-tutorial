@@ -1,4 +1,5 @@
 import asyncio
+import sqlite3
 from pathlib import Path
 from typing import Any, AsyncIterator, Awaitable, Callable, Dict
 
@@ -153,14 +154,18 @@ async def update_post(request: web.Request) -> web.Response:
     )
 
 
-async def init_db(app: web.Application) -> AsyncIterator[None]:
+def get_db_path() -> Path:
     here = Path(".")
     while not (here / ".git").exists():
         if here == here.parent:
             raise RuntimeError("Cannot find root github dir")
         here = here.parent
 
-    sqlite_db = here / "db.sqlite3"
+    return here / "db.sqlite3"
+
+
+async def init_db(app: web.Application) -> AsyncIterator[None]:
+    sqlite_db = get_db_path()
     db = await aiosqlite.connect(sqlite_db)
     db.row_factory = aiosqlite.Row
     app["DB"] = db
@@ -182,6 +187,29 @@ async def init_app() -> web.Application:
     )
     app.cleanup_ctx.append(init_db)
     return app
+
+
+def try_make_db() -> None:
+    sqlite_db = get_db_path()
+    if sqlite_db.exists():
+        return
+
+    with sqlite3.connect(sqlite_db) as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """CREATE TABLE posts (
+            id INTEGER PRIMARY KEY,
+            title TEXT,
+            text TEXT,
+            owner TEXT,
+            editor TEXT,
+            image BLOB)
+        """
+        )
+        conn.commit()
+
+
+try_make_db()
 
 
 web.run_app(init_app())
