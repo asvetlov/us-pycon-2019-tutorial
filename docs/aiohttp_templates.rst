@@ -29,7 +29,7 @@ Code structure::
 
 Sample HTML template:
 
-.. literalinclude:: ../code/05-templates/templates/example.html
+.. literalinclude:: ../code/06-templates/templates/example.html
 
 
 Template rendering
@@ -85,22 +85,22 @@ now. ``@aiohttp_jinja2.template()``decorator renders the context and returns
 Render posts list
 -----------------
 
-.. literalinclude:: ../code/05-templates/yy-full.py
+.. literalinclude:: ../code/06-templates/yy-full.py
    :pyobject: index
 
 Show blog post
 --------------
 
-.. literalinclude:: ../code/05-templates/yy-full.py
+.. literalinclude:: ../code/06-templates/yy-full.py
    :pyobject: view_post
 
 ``view.html`` template:
 
-.. literalinclude:: ../code/05-templates/templates/view.html
+.. literalinclude:: ../code/06-templates/templates/view.html
 
 ``base.html`` for template inheritance:
 
-.. literalinclude:: ../code/05-templates/templates/base.html
+.. literalinclude:: ../code/06-templates/templates/base.html
    :language: html
 
 Post editing
@@ -109,12 +109,12 @@ Post editing
 Show edit form
 ^^^^^^^^^^^^^^
 
-.. literalinclude:: ../code/05-templates/yy-full.py
+.. literalinclude:: ../code/06-templates/yy-full.py
    :pyobject: edit_post
 
 ``edit.html`` template:
 
-.. literalinclude:: ../code/05-templates/templates/edit.html
+.. literalinclude:: ../code/06-templates/templates/edit.html
 
 Multipart content
 ^^^^^^^^^^^^^^^^^
@@ -138,7 +138,7 @@ Applying edited form data
 
 There is ``POST`` handler for ``/{post}/edit`` along with ``GET`` to apply a new data:
 
-.. literalinclude:: ../code/05-templates/yy-full.py
+.. literalinclude:: ../code/06-templates/yy-full.py
    :pyobject: edit_post_apply
 
 .. note::

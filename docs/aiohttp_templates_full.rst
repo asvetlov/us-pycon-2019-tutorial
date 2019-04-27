@@ -3,4 +3,4 @@
 Full server example with templates
 ==================================
 
-.. literalinclude:: ../code/05-templates/yy-full.py
+.. literalinclude:: ../code/06-templates/yy-full.py
