@@ -13,15 +13,15 @@ For this tutorial, we'll use ``venv``.
 
 Create a new virtual environment using venv::
 
-   python3.7 -m venv tutorial-env
+   python3.7 -m venv .venv
 
 Activate the virtual environment. On Unix, Mac OS::
 
-   source tutorial-env/bin/activate
+   source .venv/bin/activate
 
 On Windows::
 
-   tutorial-env\Scripts\activate.bat
+   .venv\Scripts\activate.bat
 
 
 aiohttp
