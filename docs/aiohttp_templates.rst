@@ -29,7 +29,7 @@ Code structure::
 
 Sample HTML template:
 
-.. literalinclude:: ../code/05-templating/templates/example.html
+.. literalinclude:: ../code/05-templates/templates/example.html
 
 
 Template rendering
@@ -82,9 +82,120 @@ now. ``@aiohttp_jinja2.template()``decorator renders the context and returns
 ``web.Response`` object automatically.
 
 
+Render posts list
+-----------------
+
+.. literalinclude:: ../code/05-templates/yy-full.py
+   :pyobject: index
+
+Show blog post
+--------------
+
+.. literalinclude:: ../code/05-templates/yy-full.py
+   :pyobject: view_post
+
+``view.html`` template:
+
+.. literalinclude:: ../code/05-templates/templates/view.html
+
+``base.html`` for template inheritance:
+
+.. literalinclude:: ../code/05-templates/templates/base.html
+   :language: html
+
+Post editing
+------------
+
+Show edit form
+^^^^^^^^^^^^^^
+
+.. literalinclude:: ../code/05-templates/yy-full.py
+   :pyobject: edit_post
+
+``edit.html`` template:
+
+.. literalinclude:: ../code/05-templates/templates/edit.html
+
+Multipart content
+^^^^^^^^^^^^^^^^^
+
+We use ``method="POST" enctype="multipart/form-data"`` to send form data.
+
+Sent body looks like::
+
+    ------WebKitFormBoundaryw6YN2HqrOi6hewhP
+    Content-Disposition: form-data; name="title"
+
+    title 1
+    ------WebKitFormBoundaryw6YN2HqrOi6hewhP
+    Content-Disposition: form-data; name="text"
+
+    text of post
+    ------WebKitFormBoundaryw6YN2HqrOi6hewhP--
+
+Applying edited form data
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+There is ``POST`` handler for ``/{post}/edit`` along with ``GET`` to apply a new data:
+
+.. literalinclude:: ../code/05-templates/yy-full.py
+   :pyobject: edit_post_apply
+
+.. note::
+
+   ``POST`` handler doesn't render HTML itself but returects to ``GET /{post}/edit``
+   page.
+
+HTML site endpoints
+-------------------
+
+`GET /`
+  List posts.
+
+`GET /new`
+  Show form for adding post
+
+`POST /new`
+  Apply post adding
+
+`GET /{post}/view`
+  Show post
+
+`GET /{post}/edit`
+  Edit post
+
+`GET /{post}/edit`
+  Show edit post form
+
+`POST /{post}/edit`
+  Apply post editing
+
+`GET /{post}/delete`
+  Delete post
+
+
+
+.. note::
+
+   URLs order does matter: ``/new`` should lead ``/{post}``, otherwise ``/{post}`` web
+   handler is called with ``new`` post id.
+
+Full example for templated server
+---------------------------------
+
+Example for HTML version of blogs server: :ref:`full-template-server`
+
+
+
 TBD (by Mariatta)
 
 - Introduce aiohttp-jinja2 renderer, and use it in the web server
 - Provide example on how to structure the project (separating Python codebase and HTML templates directory)
 - Documentation: http://aiohttp_jinja2.readthedocs.org/
 - render the blog posts
+
+
+.. toctree::
+   :hidden:
+
+   aiohttp_templates_full

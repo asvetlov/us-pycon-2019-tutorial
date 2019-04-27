@@ -49,7 +49,7 @@ async def root(request: web.Request) -> web.Response:
 
 @router.get("/api")
 @handle_json_error
-async def list_posts(request: web.Request) -> web.Response:
+async def api_list_posts(request: web.Request) -> web.Response:
     ret = []
     db = request.config_dict["DB"]
     async with db.execute("SELECT id, owner, editor, title FROM posts") as cursor:
@@ -67,7 +67,7 @@ async def list_posts(request: web.Request) -> web.Response:
 
 @router.post("/api")
 @handle_json_error
-async def new_post(request: web.Request) -> web.Response:
+async def api_new_post(request: web.Request) -> web.Response:
     post = await request.json()
     title = post["title"]
     text = post["text"]
@@ -95,7 +95,7 @@ async def new_post(request: web.Request) -> web.Response:
 
 @router.get("/api/{post}")
 @handle_json_error
-async def get_post(request: web.Request) -> web.Response:
+async def api_get_post(request: web.Request) -> web.Response:
     post_id = request.match_info["post"]
     db = request.config_dict["DB"]
     post = await fetch_post(db, post_id)
@@ -115,7 +115,7 @@ async def get_post(request: web.Request) -> web.Response:
 
 @router.delete("/api/{post}")
 @handle_json_error
-async def del_post(request: web.Request) -> web.Response:
+async def api_del_post(request: web.Request) -> web.Response:
     post_id = request.match_info["post"]
     db = request.config_dict["DB"]
     async with db.execute("DELETE FROM posts WHERE id = ?", [post_id]) as cursor:
@@ -130,7 +130,7 @@ async def del_post(request: web.Request) -> web.Response:
 
 @router.patch("/api/{post}")
 @handle_json_error
-async def update_post(request: web.Request) -> web.Response:
+async def api_update_post(request: web.Request) -> web.Response:
     post_id = request.match_info["post"]
     post = await request.json()
     db = request.config_dict["DB"]
