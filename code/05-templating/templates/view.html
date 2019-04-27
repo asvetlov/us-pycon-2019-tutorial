@@ -5,11 +5,11 @@ Post {{ post.title }}
 
 {% block content %}
 <h1>{{ post.title }}</h1>
-<p> {{ post.text }} </p>
+<p><pre> {{ post.text }}</pre> </p>
 <hr>
 <p><small> created by: {{ post.owner }}, last editor: {{ post.editor }} </small></p>
 <p>
-  <a href="/">Posts list</a> 
+  <a href="/">list</a> 
   <a href="/{{ post.id }}/edit">edit</a>
 </p>
 {% endblock %}
