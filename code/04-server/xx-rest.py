@@ -42,13 +42,12 @@ def handle_json_error(
     return handler
 
 
-@router.get('/')
+@router.get("/")
 async def root(request: web.Request) -> web.Response:
     return web.Response(text=f"Placeholder")
 
 
-
-@router.get('/api')
+@router.get("/api")
 @handle_json_error
 async def list_posts(request: web.Request) -> web.Response:
     ret = []
@@ -66,7 +65,7 @@ async def list_posts(request: web.Request) -> web.Response:
     return web.json_response({"status": "ok", "data": ret})
 
 
-@router.post('/api')
+@router.post("/api")
 @handle_json_error
 async def new_post(request: web.Request) -> web.Response:
     post = await request.json()
@@ -94,7 +93,7 @@ async def new_post(request: web.Request) -> web.Response:
     )
 
 
-@router.get('/api/{post}')
+@router.get("/api/{post}")
 @handle_json_error
 async def get_post(request: web.Request) -> web.Response:
     post_id = request.match_info["post"]
@@ -114,7 +113,7 @@ async def get_post(request: web.Request) -> web.Response:
     )
 
 
-@router.delete('/api/{post}')
+@router.delete("/api/{post}")
 @handle_json_error
 async def del_post(request: web.Request) -> web.Response:
     post_id = request.match_info["post"]
@@ -129,7 +128,7 @@ async def del_post(request: web.Request) -> web.Response:
     return web.json_response({"status": "ok", "id": post_id})
 
 
-@router.patch('/api/{post}')
+@router.patch("/api/{post}")
 @handle_json_error
 async def update_post(request: web.Request) -> web.Response:
     post_id = request.match_info["post"]
