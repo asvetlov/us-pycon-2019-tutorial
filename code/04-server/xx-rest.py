@@ -7,6 +7,9 @@ import aiosqlite
 from aiohttp import web
 
 
+router = web.RouteTableDef()
+
+
 async def fetch_post(db: aiosqlite.Connection, post_id: int) -> Dict[str, Any]:
     async with db.execute(
         "SELECT owner, editor, title, text FROM posts WHERE id = ?", [post_id]
@@ -39,10 +42,13 @@ def handle_json_error(
     return handler
 
 
+@router.get('/')
 async def root(request: web.Request) -> web.Response:
     return web.Response(text=f"Placeholder")
 
 
+
+@router.get('/api')
 @handle_json_error
 async def list_posts(request: web.Request) -> web.Response:
     ret = []
@@ -60,6 +66,7 @@ async def list_posts(request: web.Request) -> web.Response:
     return web.json_response({"status": "ok", "data": ret})
 
 
+@router.post('/api')
 @handle_json_error
 async def new_post(request: web.Request) -> web.Response:
     post = await request.json()
@@ -87,6 +94,7 @@ async def new_post(request: web.Request) -> web.Response:
     )
 
 
+@router.get('/api/{post}')
 @handle_json_error
 async def get_post(request: web.Request) -> web.Response:
     post_id = request.match_info["post"]
@@ -106,6 +114,7 @@ async def get_post(request: web.Request) -> web.Response:
     )
 
 
+@router.delete('/api/{post}')
 @handle_json_error
 async def del_post(request: web.Request) -> web.Response:
     post_id = request.match_info["post"]
@@ -120,6 +129,7 @@ async def del_post(request: web.Request) -> web.Response:
     return web.json_response({"status": "ok", "id": post_id})
 
 
+@router.patch('/api/{post}')
 @handle_json_error
 async def update_post(request: web.Request) -> web.Response:
     post_id = request.match_info["post"]
@@ -175,16 +185,7 @@ async def init_db(app: web.Application) -> AsyncIterator[None]:
 
 async def init_app() -> web.Application:
     app = web.Application()
-    app.add_routes(
-        [
-            web.get("/", root),
-            web.get("/api", list_posts),
-            web.post("/api", new_post),
-            web.get("/api/{post}", get_post),
-            web.delete("/api/{post}", del_post),
-            web.patch("/api/{post}", update_post),
-        ]
-    )
+    app.add_routes(router)
     app.cleanup_ctx.append(init_db)
     return app
 
