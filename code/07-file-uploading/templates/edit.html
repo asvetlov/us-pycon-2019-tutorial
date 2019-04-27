@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}
+Edit Post {{ post.title }}
+{% endblock %}
+
+{% block content %}
+<h1>Edit: {{ post.title }}</h1>
+<form action="/{{ post.id }}/edit" method="POST"
+      enctype="multipart/form-data">
+  <p>
+    Title:
+    <input type="text" name="title" value="{{ post.title }}">
+  </p>
+  <p>Text:
+    <textarea name="text" rows="10">{{ post.text }}</textarea>
+  </p>
+  <p><img src="/{{ post.id }}/image"></p>
+  <input type="file" name="image" accept="image/png, image/jpeg">
+  <input type="submit">
+</form>
+<hr>
+<p><small> created by: {{ owner }}, last editor: {{ editor }} </small></p>
+<p>
+  <a href="/">list</a>
+  <a href="/{{ post.id }}">view</a>
+  <a href="/{{ post.id }}/delete">delete</a>
+</p>
+{% endblock %}
