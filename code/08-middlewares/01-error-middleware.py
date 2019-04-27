@@ -14,15 +14,16 @@ from aiohttp import web
 
 @web.middleware
 async def error_middleware(
-    request: web.Request, handler: Callable[[web.Request], Awaitable[web.Response]]
-) -> web.Response:
+    request: web.Request,
+    handler: Callable[[web.Request], Awaitable[web.StreamResponse]],
+) -> web.StreamResponse:
     try:
         return await handler(request)
     except asyncio.CancelledError:
         raise
     except Exception as ex:
         return aiohttp_jinja2.render_template(
-            "error-page.html", request, {"error-text": str(ex)}, status=400,
+            "error-page.html", request, {"error-text": str(ex)}, status=400
         )
 
 
@@ -180,8 +181,9 @@ async def init_db(app: web.Application) -> AsyncIterator[None]:
 
 
 async def init_app() -> web.Application:
-    app = web.Application(client_max_size=64 * 1024 ** 2,
-                          middlewares=[error_middleware])
+    app = web.Application(
+        client_max_size=64 * 1024 ** 2, middlewares=[error_middleware]
+    )
     app.add_routes(router)
     app.cleanup_ctx.append(init_db)
     aiohttp_jinja2.setup(
