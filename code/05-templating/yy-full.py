@@ -30,6 +30,28 @@ async def index(request: web.Request) -> Dict[str, Any]:
     return {"posts": ret}
 
 
+@router.get("/new")
+@aiohttp_jinja2.template("new.html")
+async def new_post(request: web.Request) -> Dict[str, Any]:
+    return {}
+
+
+@router.post("/new")
+@aiohttp_jinja2.template("edit.html")
+async def new_post(request: web.Request) -> Dict[str, Any]:
+    db = request.config_dict["DB"]
+    post = await request.post()
+    owner = "Anonymous"
+    async with db.execute(
+        "INSERT INTO posts (owner, editor, title, text) VALUES(?, ?, ?, ?)",
+        [owner, owner, post['title'], post['text']],
+    ) as cursor:
+        post_id = cursor.lastrowid
+    await db.commit()
+    raise web.HTTPSeeOther(location=f"/")
+
+
+
 @router.get("/{post}")
 @aiohttp_jinja2.template("view.html")
 async def view_post(request: web.Request) -> Dict[str, Any]:
@@ -64,7 +86,9 @@ async def edit_post(request: web.Request) -> Dict[str, Any]:
 async def delete_post(request: web.Request) -> Dict[str, Any]:
     post_id = request.match_info["post"]
     db = request.config_dict["DB"]
-    return await fetch_post(db, post_id)
+    db = request.config_dict["DB"]
+    await db.execute("DELETE FROM posts WHERE id = ?", [post_id])
+    raise web.HTTPSeeOther(location=f"/")
 
 
 # Rest is not changed from section 4

@@ -9,6 +9,7 @@ Post {{ post.title }}
 <hr>
 <p><small> created by: {{ post.owner }}, last editor: {{ post.editor }} </small></p>
 <p>
+  <a href="/">Posts list</a> 
   <a href="/{{ post.id }}/edit">edit</a>
 </p>
 {% endblock %}
