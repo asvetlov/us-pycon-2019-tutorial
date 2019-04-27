@@ -47,6 +47,7 @@ Agenda
    aiohttp_intro
    aiohttp_server
    aiohttp_client
+   aiohttp_templates
    aiohttp_middlewares
    aiohttp_session
    aiohttp_tests

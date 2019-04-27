@@ -74,4 +74,6 @@ extensions = [
     'sphinx.ext.intersphinx',
 ]
 
-intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
+intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
+                       'aiohttp': ('http://docs.aiohttp.org/en/stable/', None),
+                       'aiohttp_jinja2': ('https://aiohttp-jinja2.readthedocs.io/en/stable/', None)}

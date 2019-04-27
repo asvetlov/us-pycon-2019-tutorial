@@ -1,9 +1,13 @@
 import asyncio
+import sqlite3
 from pathlib import Path
 from typing import Any, AsyncIterator, Awaitable, Callable, Dict
 
 import aiosqlite
 from aiohttp import web
+
+
+router = web.RouteTableDef()
 
 
 async def fetch_post(db: aiosqlite.Connection, post_id: int) -> Dict[str, Any]:
@@ -38,12 +42,14 @@ def handle_json_error(
     return handler
 
 
+@router.get("/")
 async def root(request: web.Request) -> web.Response:
     return web.Response(text=f"Placeholder")
 
 
+@router.get("/api")
 @handle_json_error
-async def list_posts(request: web.Request) -> web.Response:
+async def api_list_posts(request: web.Request) -> web.Response:
     ret = []
     db = request.config_dict["DB"]
     async with db.execute("SELECT id, owner, editor, title FROM posts") as cursor:
@@ -59,8 +65,9 @@ async def list_posts(request: web.Request) -> web.Response:
     return web.json_response({"status": "ok", "data": ret})
 
 
+@router.post("/api")
 @handle_json_error
-async def new_post(request: web.Request) -> web.Response:
+async def api_new_post(request: web.Request) -> web.Response:
     post = await request.json()
     title = post["title"]
     text = post["text"]
@@ -86,8 +93,9 @@ async def new_post(request: web.Request) -> web.Response:
     )
 
 
+@router.get("/api/{post}")
 @handle_json_error
-async def get_post(request: web.Request) -> web.Response:
+async def api_get_post(request: web.Request) -> web.Response:
     post_id = request.match_info["post"]
     db = request.config_dict["DB"]
     post = await fetch_post(db, post_id)
@@ -105,8 +113,9 @@ async def get_post(request: web.Request) -> web.Response:
     )
 
 
+@router.delete("/api/{post}")
 @handle_json_error
-async def del_post(request: web.Request) -> web.Response:
+async def api_del_post(request: web.Request) -> web.Response:
     post_id = request.match_info["post"]
     db = request.config_dict["DB"]
     async with db.execute("DELETE FROM posts WHERE id = ?", [post_id]) as cursor:
@@ -119,8 +128,9 @@ async def del_post(request: web.Request) -> web.Response:
     return web.json_response({"status": "ok", "id": post_id})
 
 
+@router.patch("/api/{post}")
 @handle_json_error
-async def update_post(request: web.Request) -> web.Response:
+async def api_update_post(request: web.Request) -> web.Response:
     post_id = request.match_info["post"]
     post = await request.json()
     db = request.config_dict["DB"]
@@ -153,14 +163,18 @@ async def update_post(request: web.Request) -> web.Response:
     )
 
 
-async def init_db(app: web.Application) -> AsyncIterator[None]:
+def get_db_path() -> Path:
     here = Path(".")
     while not (here / ".git").exists():
         if here == here.parent:
             raise RuntimeError("Cannot find root github dir")
         here = here.parent
 
-    sqlite_db = here / "db.sqlite3"
+    return here / "db.sqlite3"
+
+
+async def init_db(app: web.Application) -> AsyncIterator[None]:
+    sqlite_db = get_db_path()
     db = await aiosqlite.connect(sqlite_db)
     db.row_factory = aiosqlite.Row
     app["DB"] = db
@@ -170,18 +184,32 @@ async def init_db(app: web.Application) -> AsyncIterator[None]:
 
 async def init_app() -> web.Application:
     app = web.Application()
-    app.add_routes(
-        [
-            web.get("/", root),
-            web.get("/api", list_posts),
-            web.post("/api", new_post),
-            web.get("/api/{post}", get_post),
-            web.delete("/api/{post}", del_post),
-            web.patch("/api/{post}", update_post),
-        ]
-    )
+    app.add_routes(router)
     app.cleanup_ctx.append(init_db)
     return app
+
+
+def try_make_db() -> None:
+    sqlite_db = get_db_path()
+    if sqlite_db.exists():
+        return
+
+    with sqlite3.connect(sqlite_db) as conn:
+        cur = conn.cursor()
+        cur.execute(
+            """CREATE TABLE posts (
+            id INTEGER PRIMARY KEY,
+            title TEXT,
+            text TEXT,
+            owner TEXT,
+            editor TEXT,
+            image BLOB)
+        """
+        )
+        conn.commit()
+
+
+try_make_db()
 
 
 web.run_app(init_app())

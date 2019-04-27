@@ -1,7 +1,7 @@
 aiohttp Server
 ==============
 
-Let's start writing our own web application using `aiohttp`_.
+Let's start writing our own web application using :ref:`aiohttp server<aiohttp-web>`.
 
 Install aiohttp and Python 3.7 if you have not already. Using a virtual environment
 is recommended.
@@ -184,9 +184,10 @@ Use DB in web-handler::
 Full example for REST API
 --------------------------
 
-Example for simple blog REST API: https://github.com/asvetlov/us-pycon-2019-tutorial/blob/master/code/04-server/yy-rest.py
+Example for simple blog REST API: :ref:`full-rest-server`
 
-Post structure:
+Post structure
+^^^^^^^^^^^^^^^
 
 +--------+--------------+------+
 | Field  | Description  | Type |
@@ -203,7 +204,8 @@ Post structure:
 +--------+--------------+------+
 
 
-API endpoints:
+API endpoints
+^^^^^^^^^^^^^
 
 `GET /api`
   List posts.
@@ -221,6 +223,7 @@ API endpoints:
   Edit a post. Arguments: `title`, `text`, `editor`.
 
 
+
 TBD
 
 - Write our first aiohttp web server
@@ -236,4 +239,7 @@ Form:
 Postgres? database
 
 
-.. _`aiohttp`: https://aiohttp.readthedocs.io
+.. toctree::
+   :hidden:
+
+   aiohttp_server_rest_full
