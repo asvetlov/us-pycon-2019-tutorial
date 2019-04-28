@@ -23,10 +23,12 @@ def require_login(func: _WebHandler):
 @web.middleware
 async def check_login(request: web.Request, handler: _WebHandler) -> web.StreamResponse:
     require_login = getattr(handler, '__require_login__', False)
+    session = await aiohttp_session.get_session(request)
+    username = session.get('username')
     if require_login:
-        session = await aiohttp_session.get_session(request)
-        if not session.get('username'):
+        if not username:
             raise web.HTTPSeeOther(location='/login')
+    request['username'] = username
     return await handler(request)
 
 
@@ -227,7 +229,7 @@ async def init_db(app: web.Application) -> AsyncIterator[None]:
 
 async def init_app() -> web.Application:
     app = web.Application(
-        client_max_size=64 * 1024 ** 2, middlewares=[error_middleware]
+        client_max_size=64 * 1024 ** 2, middlewares=[error_middleware, check_login]
     )
     app.add_routes(router)
     app.cleanup_ctx.append(init_db)
