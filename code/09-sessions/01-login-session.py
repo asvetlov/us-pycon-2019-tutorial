@@ -5,37 +5,37 @@ from pathlib import Path
 from typing import Any, AsyncIterator, Awaitable, Callable, Dict
 
 import aiohttp_jinja2
+import aiohttp_session
 import aiosqlite
 import jinja2
 import PIL
 import PIL.Image
 from aiohttp import web
-import aiohttp_session
+
 
 _WebHandler = Callable[[web.Request], Awaitable[web.StreamResponse]]
 
 
-def require_login(func: _WebHandler):
-    func.__require_login__ = True
+def require_login(func: _WebHandler) -> _WebHandler:
+    func.__require_login__ = True  # type: ignore
     return func
 
 
 @web.middleware
 async def check_login(request: web.Request, handler: _WebHandler) -> web.StreamResponse:
-    require_login = getattr(handler, '__require_login__', False)
+    require_login = getattr(handler, "__require_login__", False)
     session = await aiohttp_session.get_session(request)
-    username = session.get('username')
+    username = session.get("username")
     if require_login:
         if not username:
-            raise web.HTTPSeeOther(location='/login')
-    request['username'] = username
+            raise web.HTTPSeeOther(location="/login")
+    request["username"] = username
     return await handler(request)
 
 
 @web.middleware
 async def error_middleware(
-    request: web.Request,
-    handler: _WebHandler,
+    request: web.Request, handler: _WebHandler
 ) -> web.StreamResponse:
     try:
         return await handler(request)
@@ -75,14 +75,15 @@ async def login(request: web.Request) -> Dict[str, Any]:
 
 
 @router.post("/login")
-async def login(request: web.Request) -> Dict[str, Any]:
+async def login_apply(request: web.Request) -> web.Response:
     session = await aiohttp_session.get_session(request)
     form = await request.post()
-    session['username'] = form['login']
+    session["username"] = form["login"]
+    raise web.HTTPSeeOther(location="/")
 
 
 @router.get("/logout")
-async def logout(request: web.Request) -> Dict[str, Any]:
+async def logout(request: web.Request) -> web.Response:
     await aiohttp_session.new_session(request)
     raise web.HTTPSeeOther(location="/")
 
