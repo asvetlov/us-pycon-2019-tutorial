@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}
+New Post
+{% endblock %}
+
+{% block content %}
+<h1>New Post</h1>
+<form action="/new" method="POST"
+      enctype="multipart/form-data">
+  <p>
+    Title:
+    <input type="text" name="title" value="">
+  </p>
+  <p>Text:
+    <textarea type="text" name="text" rows="10"></textarea>
+  </p>
+  <input type="file" name="image" accept="image/png, image/jpeg">
+  <input type="submit">
+</form>
+<hr>
+<p>
+  <a href="/">list</a> 
+</p>
+{% endblock %}
