@@ -29,8 +29,14 @@ async def check_login(request: web.Request, handler: _WebHandler) -> web.StreamR
     if require_login:
         if not username:
             raise web.HTTPSeeOther(location="/login")
-    request["username"] = username
     return await handler(request)
+
+
+async def username_ctx_processor(request: web.Request) -> Dict[str, Any]:
+    # Jinja2 context processor
+    session = await aiohttp_session.get_session(request)
+    username = session.get("username")
+    return {"username": username}
 
 
 @web.middleware
@@ -39,11 +45,13 @@ async def error_middleware(
 ) -> web.StreamResponse:
     try:
         return await handler(request)
+    except web.HTTPException:
+        raise
     except asyncio.CancelledError:
         raise
     except Exception as ex:
         return aiohttp_jinja2.render_template(
-            "error-page.html", request, {"error-text": str(ex)}, status=400
+            "error-page.html", request, {"error_text": str(ex)}, status=400
         )
 
 
@@ -84,7 +92,8 @@ async def login_apply(request: web.Request) -> web.Response:
 
 @router.get("/logout")
 async def logout(request: web.Request) -> web.Response:
-    await aiohttp_session.new_session(request)
+    session = await aiohttp_session.get_session(request)
+    session["username"] = None
     raise web.HTTPSeeOther(location="/")
 
 
@@ -109,7 +118,7 @@ async def new_post_apply(request: web.Request) -> Dict[str, Any]:
     ) as cursor:
         post_id = cursor.lastrowid
     image = post.get("image")
-    if image is not None:
+    if image:
         img_content = image.file.read()  # type: ignore
         await apply_image(db, post_id, img_content)
     await db.commit()
@@ -146,7 +155,7 @@ async def edit_post_apply(request: web.Request) -> web.Response:
         f"UPDATE posts SET title = ?, text = ?, editor = ? WHERE id = ?",
         [post["title"], post["text"], editor, post_id],
     )
-    if image is not None:
+    if image:
         img_content = image.file.read()  # type: ignore
         await apply_image(db, post_id, img_content)
     await db.commit()
@@ -229,15 +238,17 @@ async def init_db(app: web.Application) -> AsyncIterator[None]:
 
 
 async def init_app() -> web.Application:
-    app = web.Application(
-        client_max_size=64 * 1024 ** 2, middlewares=[error_middleware, check_login]
-    )
+    app = web.Application(client_max_size=64 * 1024 ** 2)
     app.add_routes(router)
     app.cleanup_ctx.append(init_db)
-    aiohttp_jinja2.setup(
-        app, loader=jinja2.FileSystemLoader(str(Path(__file__).parent / "templates"))
-    )
     aiohttp_session.setup(app, aiohttp_session.SimpleCookieStorage())
+    aiohttp_jinja2.setup(
+        app,
+        loader=jinja2.FileSystemLoader(str(Path(__file__).parent / "templates")),
+        context_processors=[username_ctx_processor],
+    )
+    app.middlewares.append(error_middleware)
+    app.middlewares.append(check_login)
 
     return app
 

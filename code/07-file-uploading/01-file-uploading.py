@@ -51,7 +51,7 @@ async def new_post_apply(request: web.Request) -> Dict[str, Any]:
     ) as cursor:
         post_id = cursor.lastrowid
     image = post.get("image")
-    if image is not None:
+    if image:
         img_content = image.file.read()  # type: ignore
         await apply_image(db, post_id, img_content)
     await db.commit()
@@ -84,7 +84,7 @@ async def edit_post_apply(request: web.Request) -> web.Response:
         f"UPDATE posts SET title = ?, text = ? WHERE id = ?",
         [post["title"], post["text"], post_id],
     )
-    if image is not None:
+    if image:
         img_content = image.file.read()  # type: ignore
         await apply_image(db, post_id, img_content)
     await db.commit()

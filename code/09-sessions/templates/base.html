@@ -9,6 +9,10 @@
   </head>
   <body>
     <div id="content"> {% block content %} {% endblock %} </div>
-    <div><a href="/logout">Logout</a></div>
+    {% if username %}
+    <div>[{{ username }}] <a href="/logout">Logout</a></div>
+    {% else %}
+    <div>[Anonymous] <a href="/login">Login</a></div>
+    {% endif %}
   </body>
 </html>
