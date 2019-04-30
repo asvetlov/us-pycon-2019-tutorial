@@ -63,16 +63,11 @@ asyncio
 `aiohttp` is async Python library. Read up the `quick intro <https://www.blog.pythonlibrary.org/2016/07/26/python-3-an-intro-to-asyncio/>`_
 to asyncio.
 
-Heroku
-------
-
-`Python on Heroku`_ documentation.
 
 .. _`aiohttp documentation`: https://aiohttp.readthedocs.io
 
 .. _`Python venv tutorial`: https://docs.python.org/3/tutorial/venv.html
 
-.. _`Python on Heroku`: https://devcenter.heroku.com/categories/python
 
 
 
