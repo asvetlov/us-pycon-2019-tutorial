@@ -12,7 +12,7 @@ async def main() -> None:
     task1 = asyncio.create_task(long_running_task(2))
     task2 = asyncio.create_task(long_running_task(10))
     task3 = asyncio.create_task(long_running_task(5))
-    await (asyncio.wait([task1, task2, task3]))
+    await asyncio.gather(task1, task2, task3)
 
 
 if __name__ == "__main__":
