@@ -19,11 +19,13 @@ async def error_middleware(
 ) -> web.StreamResponse:
     try:
         return await handler(request)
+    except web.HTTPException:
+        raise
     except asyncio.CancelledError:
         raise
     except Exception as ex:
         return aiohttp_jinja2.render_template(
-            "error-page.html", request, {"error-text": str(ex)}, status=400
+            "error-page.html", request, {"error_text": str(ex)}, status=400
         )
 
 
@@ -66,7 +68,7 @@ async def new_post_apply(request: web.Request) -> Dict[str, Any]:
     ) as cursor:
         post_id = cursor.lastrowid
     image = post.get("image")
-    if image is not None:
+    if image:
         img_content = image.file.read()  # type: ignore
         await apply_image(db, post_id, img_content)
     await db.commit()
@@ -99,7 +101,7 @@ async def edit_post_apply(request: web.Request) -> web.Response:
         f"UPDATE posts SET title = ?, text = ? WHERE id = ?",
         [post["title"], post["text"], post_id],
     )
-    if image is not None:
+    if image:
         img_content = image.file.read()  # type: ignore
         await apply_image(db, post_id, img_content)
     await db.commit()

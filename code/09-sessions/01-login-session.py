@@ -2,14 +2,57 @@ import asyncio
 import io
 import sqlite3
 from pathlib import Path
-from typing import Any, AsyncIterator, Dict
+from typing import Any, AsyncIterator, Awaitable, Callable, Dict
 
 import aiohttp_jinja2
+import aiohttp_session
 import aiosqlite
 import jinja2
 import PIL
 import PIL.Image
 from aiohttp import web
+
+
+_WebHandler = Callable[[web.Request], Awaitable[web.StreamResponse]]
+
+
+def require_login(func: _WebHandler) -> _WebHandler:
+    func.__require_login__ = True  # type: ignore
+    return func
+
+
+@web.middleware
+async def check_login(request: web.Request, handler: _WebHandler) -> web.StreamResponse:
+    require_login = getattr(handler, "__require_login__", False)
+    session = await aiohttp_session.get_session(request)
+    username = session.get("username")
+    if require_login:
+        if not username:
+            raise web.HTTPSeeOther(location="/login")
+    return await handler(request)
+
+
+async def username_ctx_processor(request: web.Request) -> Dict[str, Any]:
+    # Jinja2 context processor
+    session = await aiohttp_session.get_session(request)
+    username = session.get("username")
+    return {"username": username}
+
+
+@web.middleware
+async def error_middleware(
+    request: web.Request, handler: _WebHandler
+) -> web.StreamResponse:
+    try:
+        return await handler(request)
+    except web.HTTPException:
+        raise
+    except asyncio.CancelledError:
+        raise
+    except Exception as ex:
+        return aiohttp_jinja2.render_template(
+            "error-page.html", request, {"error_text": str(ex)}, status=400
+        )
 
 
 router = web.RouteTableDef()
@@ -33,18 +76,42 @@ async def index(request: web.Request) -> Dict[str, Any]:
     return {"posts": ret}
 
 
+@router.get("/login")
+@aiohttp_jinja2.template("login.html")
+async def login(request: web.Request) -> Dict[str, Any]:
+    return {}
+
+
+@router.post("/login")
+async def login_apply(request: web.Request) -> web.Response:
+    session = await aiohttp_session.get_session(request)
+    form = await request.post()
+    session["username"] = form["login"]
+    raise web.HTTPSeeOther(location="/")
+
+
+@router.get("/logout")
+async def logout(request: web.Request) -> web.Response:
+    session = await aiohttp_session.get_session(request)
+    session["username"] = None
+    raise web.HTTPSeeOther(location="/")
+
+
 @router.get("/new")
+@require_login
 @aiohttp_jinja2.template("new.html")
 async def new_post(request: web.Request) -> Dict[str, Any]:
     return {}
 
 
 @router.post("/new")
+@require_login
 @aiohttp_jinja2.template("edit.html")
 async def new_post_apply(request: web.Request) -> Dict[str, Any]:
     db = request.config_dict["DB"]
     post = await request.post()
-    owner = "Anonymous"
+    session = await aiohttp_session.get_session(request)
+    owner = session["username"]
     async with db.execute(
         "INSERT INTO posts (owner, editor, title, text) VALUES(?, ?, ?, ?)",
         [owner, owner, post["title"], post["text"]],
@@ -67,6 +134,7 @@ async def view_post(request: web.Request) -> Dict[str, Any]:
 
 
 @router.get("/{post}/edit")
+@require_login
 @aiohttp_jinja2.template("edit.html")
 async def edit_post(request: web.Request) -> Dict[str, Any]:
     post_id = request.match_info["post"]
@@ -75,14 +143,17 @@ async def edit_post(request: web.Request) -> Dict[str, Any]:
 
 
 @router.post("/{post}/edit")
+@require_login
 async def edit_post_apply(request: web.Request) -> web.Response:
     post_id = request.match_info["post"]
     db = request.config_dict["DB"]
     post = await request.post()
     image = post.get("image")
+    session = await aiohttp_session.get_session(request)
+    editor = session["username"]
     await db.execute(
-        f"UPDATE posts SET title = ?, text = ? WHERE id = ?",
-        [post["title"], post["text"], post_id],
+        f"UPDATE posts SET title = ?, text = ?, editor = ? WHERE id = ?",
+        [post["title"], post["text"], editor, post_id],
     )
     if image:
         img_content = image.file.read()  # type: ignore
@@ -92,6 +163,7 @@ async def edit_post_apply(request: web.Request) -> web.Response:
 
 
 @router.get("/{post}/delete")
+@require_login
 async def delete_post(request: web.Request) -> web.Response:
     post_id = request.match_info["post"]
     db = request.config_dict["DB"]
@@ -169,9 +241,14 @@ async def init_app() -> web.Application:
     app = web.Application(client_max_size=64 * 1024 ** 2)
     app.add_routes(router)
     app.cleanup_ctx.append(init_db)
+    aiohttp_session.setup(app, aiohttp_session.SimpleCookieStorage())
     aiohttp_jinja2.setup(
-        app, loader=jinja2.FileSystemLoader(str(Path(__file__).parent / "templates"))
+        app,
+        loader=jinja2.FileSystemLoader(str(Path(__file__).parent / "templates")),
+        context_processors=[username_ctx_processor],
     )
+    app.middlewares.append(error_middleware)
+    app.middlewares.append(check_login)
 
     return app
 
