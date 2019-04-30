@@ -133,9 +133,6 @@ needs to be accessed in other methods, like ``POST`` or ``PUT``::
         return web.Response(text=f"{username} was added")
 
 
-TBD: technically request.post() is for multipart encoded content mostly. Should we tell about it?
-
-
 Working with JSON
 -----------------
 
@@ -221,22 +218,6 @@ API endpoints
 
 `PATCH /api/{post}`
   Edit a post. Arguments: `title`, `text`, `editor`.
-
-
-
-TBD
-
-- Write our first aiohttp web server
-- Introduce how to add routes/url
-- Introduce how to handle GET and POST requests (useful for serving REST API)
-- Provide example of how to handle file upload to the web server
-- introduce db engine connection, in POST handler (eg store the blog to database)
-  (use heroku, basic plan is free)
-
-
-Story: build a blog website
-Form:
-Postgres? database
 
 
 .. toctree::
