@@ -8,10 +8,10 @@ is recommended.
 
 Example using ``venv``. In the command line::
 
-   python3.7 -m venv tutorial_venv
-   source tutorial_venv/bin/activate
+   python3.7 -m venv .venv
+   source .venv/bin/activate
 
-   (tutorial_venv) python3.7 -m pip install -U pip aiohttp
+   (.venv) python3.7 -m pip install -U pip aiohttp
 
 A simple web server example
 ---------------------------
@@ -45,7 +45,7 @@ To run the app::
 
 Run the script, e.g. in the command line::
 
-    (tutorial_venv) python server.py
+    (.venv) python server.py
 
 
 You should see the following output in the command line::

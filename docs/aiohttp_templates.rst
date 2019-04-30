@@ -18,7 +18,7 @@ aiohttp-jinja2
 Install the dependencies::
 
 
-    (tutorial_venv) python3.7 -m pip install -U jinja2 aiohttp-jinja2
+    (.venv) python3.7 -m pip install -U jinja2 aiohttp-jinja2
 
 
 Code structure::
