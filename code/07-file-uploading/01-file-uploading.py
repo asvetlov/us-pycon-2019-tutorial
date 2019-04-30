@@ -119,10 +119,10 @@ async def apply_image(
     db: aiosqlite.Connection, post_id: int, img_content: bytes
 ) -> None:
     buf = io.BytesIO(img_content)
-    out_buf = io.BytesIO()
     loop = asyncio.get_event_loop()
     img = PIL.Image.open(buf)
     new_img = await loop.run_in_executor(None, img.resize, (64, 64), PIL.Image.LANCZOS)
+    out_buf = io.BytesIO()
     new_img.save(out_buf, format="JPEG")
     await db.execute(
         "UPDATE posts SET image = ? WHERE id = ?", [out_buf.getvalue(), post_id]

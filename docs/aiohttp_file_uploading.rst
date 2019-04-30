@@ -41,17 +41,30 @@ Image web handler
 Return a black image if nothing is present in DB, the image content with ``image/jpeg``
 content type otherwise.
 
-To render image we need to change ``view.html`` template:
+To render image we need to change ``view.html`` template::
 
-.. literalinclude:: ../code/07-file-uploading/templates/view.html
+    {% block content %}
+    <h1>{{ post.title }}</h1>
+    ...
+    <p><img src="/{{ post.id }}/image"></p>
+    ...
+    {% endblock %}
 
 Upload form
 -----------
 
-Add ``<input type="file" name="image" accept="image/png, image/jpeg">`` HTML form field:
+Add ``<input type="file" name="image" accept="image/png, image/jpeg">`` HTML form
+field::
 
-.. literalinclude:: ../code/07-file-uploading/templates/edit.html
-
+    {% block content %}
+    <h1>Edit: {{ post.title }}</h1>
+    <form action="/{{ post.id }}/edit" method="POST"
+          enctype="multipart/form-data">
+      ...
+      <input type="file" name="image" accept="image/png, image/jpeg">
+      ...
+    </form>
+    {% endblock %}
 
 Handle uploaded image
 ---------------------
