@@ -9,7 +9,7 @@ render HTML templates.
 aiohttp is a core library without embedded templating tool, third party libraries need
 to be installed to provide such functionality.
 
-Let's use officially supported ``aiohttp_jinja2`` for famous ``jinja2`` template engine.
+Let's use officially supported ``aiohttp_jinja2`` for famous ``jinja2`` template engine (http://aiohttp_jinja2.readthedocs.org/).
 
 
 aiohttp-jinja2
@@ -78,7 +78,7 @@ Anouther alternative is applying ``@aiohttp_jinja2.template()`` decorator to
         return content
 
 Note, the ``great_user`` signature has changed: it returns a *jinja2 context*
-now. ``@aiohttp_jinja2.template()``decorator renders the context and returns
+now. ``@aiohttp_jinja2.template()`` decorator renders the context and returns
 ``web.Response`` object automatically.
 
 
@@ -88,15 +88,9 @@ Render posts list
 .. literalinclude:: ../code/06-templates/yy-full.py
    :pyobject: index
 
-Show blog post
---------------
+``index.html`` template:
 
-.. literalinclude:: ../code/06-templates/yy-full.py
-   :pyobject: view_post
-
-``view.html`` template:
-
-.. literalinclude:: ../code/06-templates/templates/view.html
+.. literalinclude:: ../code/06-templates/templates/index.html
 
 ``base.html`` for template inheritance:
 
@@ -184,15 +178,6 @@ Full example for templated server
 ---------------------------------
 
 Example for HTML version of blogs server: :ref:`full-template-server`
-
-
-
-TBD (by Mariatta)
-
-- Introduce aiohttp-jinja2 renderer, and use it in the web server
-- Provide example on how to structure the project (separating Python codebase and HTML templates directory)
-- Documentation: http://aiohttp_jinja2.readthedocs.org/
-- render the blog posts
 
 
 .. toctree::
