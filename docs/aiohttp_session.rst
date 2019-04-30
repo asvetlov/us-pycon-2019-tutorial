@@ -142,3 +142,14 @@ Setup context processor::
             loader=...,
             context_processors=[username_ctx_processor],
         )
+
+
+Full example for server with sessions support
+---------------------------------------------
+
+Example for HTML version of blogs server with images: :ref:`full-session-server`
+
+.. toctree::
+   :hidden:
+
+   aiohttp_session_full

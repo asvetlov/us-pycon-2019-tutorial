@@ -84,3 +84,14 @@ Check for login
             if login_required(handler):
                 raise web.HTTPSeeAlso(location='/login')
         return await handler(request)
+
+
+Full example for server with error-page middleware
+---------------------------------------------------
+
+Example for HTML version of blogs server with images: :ref:`full-middleware-error-page`
+
+.. toctree::
+   :hidden:
+
+   aiohttp_middlewares_full
