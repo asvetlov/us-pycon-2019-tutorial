@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Any
 
+import aiosqlite
 import pytest
 from aiohttp.test_utils import TestClient as _TestClient
 
@@ -20,7 +21,7 @@ async def test_list_empty(client: _TestClient) -> None:
     assert data == {"data": [], "status": "ok"}
 
 
-async def test_list_after_adding_post(client: _TestClient) -> None:
+async def test_add_post(client: _TestClient) -> None:
     POST_REQ = {"title": "test title", "text": "test text", "owner": "test user"}
     POST = {"id": 1, "editor": POST_REQ["owner"], **POST_REQ}
     resp = await client.post("/api", json=POST_REQ)
@@ -34,3 +35,26 @@ async def test_list_after_adding_post(client: _TestClient) -> None:
     assert resp.status == 200, await resp.text()
     data = await resp.json()
     assert data == {"data": [POST_WITHOUT_TEXT], "status": "ok"}
+
+
+async def test_get_post(client: _TestClient, db: aiosqlite.Connection) -> None:
+    async with db.execute(
+        "INSERT INTO posts (title, text, owner, editor) VALUES (?, ?, ?, ?)",
+        ["title", "text", "user", "user"],
+    ) as cursor:
+        post_id = cursor.lastrowid
+    await db.commit()
+
+    resp = await client.get(f"/api/{post_id}")
+    assert resp.status == 200
+    data = await resp.json()
+    assert data == {
+        "data": {
+            "editor": "user",
+            "id": "1",
+            "owner": "user",
+            "text": "text",
+            "title": "title",
+        },
+        "status": "ok",
+    }
