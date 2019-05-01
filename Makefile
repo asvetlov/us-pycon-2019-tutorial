@@ -16,3 +16,6 @@ doc:
 fmt format:
 	isort -rc code
 	black code
+
+test:
+	pytest code/10-testing/tests

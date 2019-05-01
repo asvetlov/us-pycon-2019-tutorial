@@ -405,7 +405,6 @@ def try_make_db() -> None:
         conn.commit()
 
 
-try_make_db()
-
-
-web.run_app(init_app())
+if __name__ == '__main__':
+    try_make_db()
+    web.run_app(init_app())
