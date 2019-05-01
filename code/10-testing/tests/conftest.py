@@ -14,7 +14,8 @@ def db_path(tmp_path: Path) -> Path:
 
 
 @pytest.fixture
-async def db(db_path):
+async def db(db_path: Path) -> aiosqlite.Connection:
     conn = await aiosqlite.connect(db_path)
+    conn.row_factory = aiosqlite.Row
     yield conn
     await conn.close()
