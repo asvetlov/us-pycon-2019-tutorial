@@ -21,7 +21,7 @@ Making test asynchronous
 Just use ``async def test_*()`` instead of plain ``def test_*()``. ``pytest-aiohttp``
 does all dirty work for you::
 
-    async def test_a():
+    async def test_a() -> None:
         await asyncio.sleep(0.01)
         assert 1 == 2  # False
 
@@ -46,7 +46,7 @@ Usage::
 
     from aioresponses import aioresponses
 
-    async def test_request():
+    async def test_request() -> None:
         with aioresponses() as mocked:
             mocked.get('http://example.com', status=200, body='test')
             session = aiohttp.ClientSession()
