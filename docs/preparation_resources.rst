@@ -30,7 +30,7 @@ the file, or `clone this repository <https://github.com/asvetlov/us-pycon-2019-t
    (.venv) python -m pip install -U pip -r requirements.txt
 
 
-3. Verify that you correctly have Python 3.7 installed. If you're able the following
+3. Verify that you correctly have Python 3.7 installed. If you're able to run the following
    code, then you're good to go.
 
 
