@@ -24,7 +24,8 @@ On Windows::
     .venv\Scripts\activate.bat
 
 
-Install the dependencies::
+Install the dependencies, listed in the `requirements.txt <https://github.com/asvetlov/us-pycon-2019-tutorial/blob/master/requirements.txt>`_ file. You can download
+the file, or `clone this repository <https://github.com/asvetlov/us-pycon-2019-tutorial>`_::
 
    (.venv) python -m pip install -U pip -r requirements.txt
 
