@@ -19,3 +19,7 @@ fmt format:
 
 test:
 	pytest code/10-testing/tests
+
+
+vtest:
+	pytest -vvv code/10-testing/tests
