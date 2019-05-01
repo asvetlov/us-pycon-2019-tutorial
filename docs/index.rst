@@ -41,8 +41,7 @@ Agenda
 .. toctree::
    :titlesonly:
 
-   preparation
-   resources
+   preparation_resources
    asyncio_intro
    aiohttp_intro
    aiohttp_server
