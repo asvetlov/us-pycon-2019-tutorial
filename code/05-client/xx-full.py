@@ -2,7 +2,8 @@ import asyncio
 import functools
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
-from typing import Any, AsyncIterator, Awaitable, Callable, List, Optional
+from types import TracebackType
+from typing import Any, AsyncIterator, Awaitable, Callable, List, Optional, Type
 
 import aiohttp
 import click
@@ -15,7 +16,7 @@ class Post:
     owner: str
     editor: str
     title: str
-    text: Optional[str]
+    text: Optional[str]  # post listing doesn't return text field
 
     def pprint(self) -> None:
         click.echo(f"Post {self.id}")
@@ -34,6 +35,18 @@ class Client:
 
     async def close(self) -> None:
         return await self._client.close()
+
+    async def __enter__(self) -> "Client":
+        return self
+
+    async def __exit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> Optional[bool]:
+        await self.close()
+        return None
 
     def _make_url(self, path: str) -> URL:
         return self._base_url / path
@@ -106,9 +119,11 @@ def async_cmd(func: Callable[..., Awaitable[None]]) -> Callable[..., None]:
 
 
 @click.group()
-@click.option("--base-url", type=str, required=True)
-@click.option("--user", type=str, default="Anonymous")
-@click.option("--show-traceback", is_flag=True, default=False)
+@click.option(
+    "--base-url", type=str, default="http://localhost:8080", show_default=True
+)
+@click.option("--user", type=str, default="Anonymous", show_default=True)
+@click.option("--show-traceback", is_flag=True, default=False, show_default=True)
 @click.pass_context
 def main(ctx: click.Context, base_url: str, user: str, show_traceback: bool) -> None:
     """REST client for tutorial server"""
@@ -116,10 +131,11 @@ def main(ctx: click.Context, base_url: str, user: str, show_traceback: bool) -> 
 
 
 @main.command()
-@click.argument("title")
-@click.argument("text")
+@click.option("--title", type=str, required=True)
+@click.option("--text", type=str, required=True)
 @async_cmd
 async def create(root: Root, title: str, text: str) -> None:
+    """Create new blog post"""
     async with root.client() as client:
         post = await client.create(title, text)
         click.echo(f"Created post {post.id}")
@@ -130,6 +146,7 @@ async def create(root: Root, title: str, text: str) -> None:
 @click.argument("post_id", type=int)
 @async_cmd
 async def get(root: Root, post_id: int) -> None:
+    """Get detailed info about blog post"""
     async with root.client() as client:
         post = await client.get(post_id)
         post.pprint()
@@ -139,6 +156,7 @@ async def get(root: Root, post_id: int) -> None:
 @click.argument("post_id", type=int)
 @async_cmd
 async def delete(root: Root, post_id: int) -> None:
+    """Delete blog post"""
     async with root.client() as client:
         await client.delete(post_id)
         click.echo(f"Post {post_id} is deleted")
@@ -152,6 +170,7 @@ async def delete(root: Root, post_id: int) -> None:
 async def update(
     root: Root, post_id: int, title: Optional[str], text: Optional[str]
 ) -> None:
+    """Update existing blog post"""
     async with root.client() as client:
         post = await client.update(post_id, title, text)
         post.pprint()
@@ -160,6 +179,7 @@ async def update(
 @main.command()
 @async_cmd
 async def list(root: Root) -> None:
+    """List existing blog posts"""
     async with root.client() as client:
         posts = await client.list()
         click.echo("List posts:")
