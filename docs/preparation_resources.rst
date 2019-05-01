@@ -29,20 +29,27 @@ Install the dependencies::
    (.venv) python -m pip install -U pip -r requirements.txt
 
 
+3. Verify that you correctly have Python 3.7 installed. If you're able the following
+   code, then you're good to go.
+
+
+.. literalinclude:: ../code/00-preparation/hello.py
+
+
 Resources and documentation links
-=================================
+---------------------------------
 
 Tools and documentations that we'll use throughout this tutorial.
 
 
 venv
-----
+''''
 
 `Python venv tutorial`_ documentation.
 
 
 aiohttp
--------
+'''''''
 
 - Installation: ``python3.7 -m pip install aiohttp``.
 
@@ -54,7 +61,7 @@ aiohttp
 
 
 f-strings
----------
+'''''''''
 
 We will use some f-strings during this tutorial.
 
@@ -75,13 +82,13 @@ Example::
    print(f"Hello {first_name} {last_name}")
 
 asyncio
--------
+'''''''
 
 `aiohttp`_ is async Python library. Read up the `quick intro <https://www.blog.pythonlibrary.org/2016/07/26/python-3-an-intro-to-asyncio/>`_
 to asyncio.
 
 type annotations
-----------------
+''''''''''''''''
 
 Our code examples use type annotations and checked with ``mypy``. It is optional.
 
@@ -90,7 +97,7 @@ Our code examples use type annotations and checked with ``mypy``. It is optional
 - mypy documentation: https://mypy.readthedocs.io/en/stable/
 
 dataclass
----------
+'''''''''
 
 
 The :mod:`dataclass <python:dataclasses>` module provides a decorator and functions
@@ -112,7 +119,7 @@ Example::
 `dataclass documentation`_.
 
 aiohttp-jinja2
---------------
+''''''''''''''
 
 `jinja2 <http://jinja.pocoo.org/>`_ template renderer for `aiohttp.web
 <https://aiohttp.readthedocs.io/en/stable/web.html#aiohttp-web>`_.
@@ -120,13 +127,13 @@ aiohttp-jinja2
 `aiohttp-jinja2 documentation`_.
 
 aiohttp-session
----------------
+'''''''''''''''
 
 https://aiohttp-session.readthedocs.io/en/stable/
 
 
 click
------
+'''''
 
 Click is a Python package for creating beautiful command line interfaces in a composable way with as little code as necessary.
 It’s the “Command Line Interface Creation Kit”.
