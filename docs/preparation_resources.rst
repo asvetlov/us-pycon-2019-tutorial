@@ -93,7 +93,7 @@ dataclass
 ---------
 
 
-The :mod:`dataclass <python:dataclass>` module provides a decorator and functions
+The :mod:`dataclass <python:dataclasses>` module provides a decorator and functions
 for automatically adding generated special methods such as ``__init__()`` and ``__repr__()``
 to user-defined classes. It was originally described in `PEP 557 <https://www.python.org/dev/peps/pep-0557/>`_.
 
