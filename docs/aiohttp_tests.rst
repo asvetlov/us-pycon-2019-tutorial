@@ -145,8 +145,77 @@ Use ``Client`` instance to test against running server::
 Testing client with fake server
 -------------------------------
 
+Assume we have no server code. We need to use *fake server*::
+
+    async def test_get_post(aiohttp_server: Any) -> None:
+        async def handler(request: web.Request) -> web.Response:
+            data = await request.json()
+            assert data["title"] == "test title"
+            assert data["text"] == "test text"
+            return web.json_response(
+                {
+                    "status": "ok",
+                    "data": {
+                        "id": 1,
+                        "title": "test title",
+                        "text": "test text",
+                        "owner": "test_user",
+                        "editor": "test_user",
+                    },
+                }
+            )
+
+        app = web.Application()
+        app.add_routes([web.post("/api", handler)])
+        server = await aiohttp_server(app)
+        async with Client(server.make_url("/"), "test_user") as client:
+            post = await client.create("test title", "test text")
+
+            assert post.id == 1
+            assert post.title == "test title"
+            assert post.text == "test text"
+            assert post.owner == "test_user"
+            assert post.editor == "test_user"
+
+
 Working with HTTPS
 ------------------
+
+To test HTTPS proper SSL certificates are required.
+
+Certificate is coupled with DNS, you don't want to pay for testing certs.
+
+There are two options: use pre-generated self-signed certificate pair of use awesome
+``trustme`` library::
+
+    @pytest.fixture
+    def tls_certificate_authority() -> Any:
+        return trustme.CA()
+
+
+    @pytest.fixture
+    def tls_certificate(tls_certificate_authority: Any) -> Any:
+        return tls_certificate_authority.issue_server_cert("localhost",
+                                                           "127.0.0.1",
+                                                           "::1")
+
+
+    @pytest.fixture
+    def server_ssl_ctx(tls_certificate: Any) -> ssl.SSLContext:
+        ssl_ctx = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+        tls_certificate.configure_cert(ssl_ctx)
+        return ssl_ctx
+
+
+    @pytest.fixture
+    def client_ssl_ctx(tls_certificate_authority: Any) -> ssl.SSLContext:
+        ssl_ctx = ssl.create_default_context(purpose=ssl.Purpose.SERVER_AUTH)
+        tls_certificate_authority.configure_trust(ssl_ctx)
+        return ssl_ctx
+
+Pass ``server_ssl_ctx`` and ``client_ssl_ctx`` as ``ssl`` parameter to test *secured*
+TCP connection instead of plain TCP.
+
 
 Client mocking
 --------------
