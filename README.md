@@ -9,5 +9,6 @@ Top-level commands:
 * `make setup` -- install requirements
 * `make fmt` -- automatically reformat code (black+isort)
 * `make lint` -- run linters (black, isort, flake8, mypy)
+* `make test` -- run unittests
 
 Uses Python 3.7+.
