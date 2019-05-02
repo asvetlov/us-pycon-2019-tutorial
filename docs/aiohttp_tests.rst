@@ -109,6 +109,37 @@ Use ``db`` fixture to add a post before testing ``/api/{post_id}`` web-handler::
         }
 
 
+Testing client with real server
+-------------------------------
+
+Create a fixture to start a test server and ``Client`` instance::
+
+    @pytest.fixture
+    async def server(aiohttp_server: Any, db_path: Path) -> _TestServer:
+        app = await init_app(db_path)
+        return await aiohttp_server(app)
+
+
+    @pytest.fixture
+    async def client(server: _TestServer) -> Client:
+        async with Client(server.make_url("/"), "test_user") as client:
+            yield client
+
+
+Use ``Client`` instance to test against running server::
+
+    async def test_get_post(client: Client, db: aiosqlite.Connection) -> None:
+        post = await client.create("test title", "test text")
+
+        async with db.execute(
+            "SELECT title, text, owner, editor FROM posts WHERE id = ?", [post.id]
+        ) as cursor:
+            record = await cursor.fetchone()
+            assert record["title"] == "test title"
+            assert record["text"] == "test text"
+            assert record["owner"] == "test_user"
+            assert record["editor"] == "test_user"
+
 
 
 Testing client with fake server

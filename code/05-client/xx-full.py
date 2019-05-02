@@ -36,10 +36,10 @@ class Client:
     async def close(self) -> None:
         return await self._client.close()
 
-    async def __enter__(self) -> "Client":
+    async def __aenter__(self) -> "Client":
         return self
 
-    async def __exit__(
+    async def __aexit__(
         self,
         exc_type: Optional[Type[BaseException]],
         exc_val: Optional[BaseException],
