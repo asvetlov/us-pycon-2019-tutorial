@@ -396,7 +396,7 @@ def try_make_db(sqlite_db: Path) -> None:
 
 
 def get_db_path() -> Path:
-    here = Path(".")
+    here = Path.cwd()
     while not (here / ".git").exists():
         if here == here.parent:
             raise RuntimeError("Cannot find root github dir")

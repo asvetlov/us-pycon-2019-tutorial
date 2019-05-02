@@ -164,7 +164,7 @@ async def api_update_post(request: web.Request) -> web.Response:
 
 
 def get_db_path() -> Path:
-    here = Path(".")
+    here = Path.cwd()
     while not (here / ".git").exists():
         if here == here.parent:
             raise RuntimeError("Cannot find root github dir")
