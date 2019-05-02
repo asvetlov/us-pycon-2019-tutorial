@@ -9,7 +9,8 @@ render HTML templates.
 aiohttp is a core library without embedded templating tool, third party libraries need
 to be installed to provide such functionality.
 
-Let's use officially supported ``aiohttp_jinja2`` for famous ``jinja2`` template engine (http://aiohttp_jinja2.readthedocs.org/).
+Let's use officially supported ``aiohttp_jinja2`` for famous ``jinja2`` template engine
+(http://aiohttp_jinja2.readthedocs.org/).
 
 
 aiohttp-jinja2
@@ -85,7 +86,7 @@ now. ``@aiohttp_jinja2.template()`` decorator renders the context and returns
 Render posts list
 -----------------
 
-.. literalinclude:: ../code/06-templates/yy-full.py
+.. literalinclude:: ../code/06-templates/01-templated-server.py
    :pyobject: index
 
 ``index.html`` template:
@@ -103,7 +104,7 @@ Post editing
 Show edit form
 ^^^^^^^^^^^^^^
 
-.. literalinclude:: ../code/06-templates/yy-full.py
+.. literalinclude:: ../code/06-templates/01-templated-server.py
    :pyobject: edit_post
 
 ``edit.html`` template:
@@ -132,7 +133,7 @@ Applying edited form data
 
 There is ``POST`` handler for ``/{post}/edit`` along with ``GET`` to apply a new data:
 
-.. literalinclude:: ../code/06-templates/yy-full.py
+.. literalinclude:: ../code/06-templates/01-templated-server.py
    :pyobject: edit_post_apply
 
 .. note::

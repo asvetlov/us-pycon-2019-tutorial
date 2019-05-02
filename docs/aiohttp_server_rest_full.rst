@@ -3,4 +3,4 @@
 Full REST server example
 ========================
 
-.. literalinclude:: ../code/04-server/xx-rest.py
+.. literalinclude:: ../code/04-server/03-rest.py
