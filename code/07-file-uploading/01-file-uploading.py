@@ -147,7 +147,7 @@ async def fetch_post(db: aiosqlite.Connection, post_id: int) -> Dict[str, Any]:
 
 
 def get_db_path() -> Path:
-    here = Path(".")
+    here = Path.cwd()
     while not (here / ".git").exists():
         if here == here.parent:
             raise RuntimeError("Cannot find root github dir")
