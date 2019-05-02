@@ -9,3 +9,7 @@ aiosqlite==0.10.0
 aiohttp-jinja2>=1.1.0
 pillow>=6.0.0
 click>=7.0
+pytest-aiohttp==0.3.0
+trustme==0.5.1
+aioresponses==0.6.0
+-e code/10-testing
