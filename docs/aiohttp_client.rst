@@ -94,10 +94,10 @@ a client variable *inside* ``try``/``finally`` block.
 To support this form we need to implement ``__aenter__`` / ``__aexit__`` async
 ``Client`` methods::
 
-    async def __enter__(self) -> "Client":
+    async def __aenter__(self) -> "Client":
         return self
 
-    async def __exit__(
+    async def __aexit__(
         self,
         exc_type: Optional[Type[BaseException]],
         exc_val: Optional[BaseException],
