@@ -23,7 +23,6 @@ varying time to complete.
 When the code run, we can see the following output::
 
     Begin sleep for 2
-    Begin sleep for 2
     Awake from 2
     Begin sleep for 10
     Awake from 10
