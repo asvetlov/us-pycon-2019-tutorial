@@ -161,6 +161,6 @@ something new together, and be comfortable working with asyncio.
 
 .. _`aiohttp`: https://aiohttp.readthedocs.io
 
-.. _`requests`: https://2.python-requests.org//en/master/
+.. _`requests`: https://requests.readthedocs.io/
 
 .. _`PEP 8010`: https://www.python.org/dev/peps/pep-8010/
