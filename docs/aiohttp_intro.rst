@@ -60,7 +60,7 @@ The file ``sync_pep_8010.html`` will be created.
 -----------
 
 Let's take the next 10-15 minutes to write a script that will programmatically
-download PEPs 8010 to 8016 using `requests`_ library.
+download PEPs 8010 to 8015 using `requests`_ library.
 
 Solution
 --------
@@ -130,7 +130,7 @@ The code is looking more complex than when we're doing it synchronously, using
 resource using aiohttp, now you can download multiple pages asynchronously.
 
 Let's take the next 10-15 minutes to write the script for downloading PEPs
-8010 - 8016 using aiohttp.
+8010 - 8015 using aiohttp.
 
 
 Solution
