@@ -1,4 +1,4 @@
-aiohttp==3.5.4
+aiohttp==3.7.4
 aiohttp-session==2.7.0
 mypy==0.701
 black==19.3b0
