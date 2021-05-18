@@ -66,7 +66,7 @@ To render a page using the template::
         return response
 
 
-Anouther alternative is applying ``@aiohttp_jinja2.template()`` decorator to
+Another alternative is applying ``@aiohttp_jinja2.template()`` decorator to
 *web-handler*::
 
     @routes.get('/{username}')
